@@ -8,7 +8,7 @@ import { Document } from './document.model'
 export class DocumentsService {
   documentSelectedEvent = new EventEmitter<Document[]>();
   documentChangedEvent = new EventEmitter<Document[]>();
-  documents: Document[];
+  documents: Document[] = [];
 
   constructor() {
     this.documents = MOCKDOCUMENTS;
@@ -19,17 +19,16 @@ export class DocumentsService {
   }
 
   getDocument(id: string): Document {
-    for (let document of this.documents) {
+    for (const document of this.documents) {
       if (document.id === id) {
         return document
       }
-      else
-      return null;
     }
+    return null;
   }
 
-  deleteDocument(document: Document){
-    if (document === null ) {
+  deleteDocument(document: Document) {
+    if (document === null) {
       return;
     }
     const pos = this.documents.indexOf(document);

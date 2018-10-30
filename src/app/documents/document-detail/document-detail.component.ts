@@ -11,37 +11,37 @@ import { WindRefService } from 'src/app/wind-ref.service';
   styleUrls: ['./document-detail.component.css']
 })
 export class DocumentDetailComponent implements OnInit {
- document: Document;
- id: string;
- nativeWindow: any;
+  document: Document;
+  id: string;
+  nativeWindow: any;
 
   constructor(private documentService: DocumentsService,
-                        private router: Router,                  
-                        private route: ActivatedRoute,
-                        private windowRefService: WindRefService
-                      ) { 
-                        this.nativeWindow = windowRefService.getNativeWindow();
-                      }
+    private router: Router,
+    private route: ActivatedRoute,
+    private windowRefService: WindRefService
+  ) {
+    this.nativeWindow = windowRefService.getNativeWindow();
+  }
 
   ngOnInit() {
     this.route.params
-    .subscribe(
-      (params: Params) => {
-        this.id = params['id'];
-        this.document = this.documentService.getDocument(this.id);
-      }
-    );
+      .subscribe(
+        (params: Params) => {
+          this.id = params['id'];
+          this.document = this.documentService.getDocument(this.id);
+        }
+      );
   }
 
   onView() {
-    if (this.document.url){
-      this.nativeWindow.open(this.document.url)
+    if (this.document.url) {
+      this.nativeWindow.open(this.document.url);
     }
   }
 
   onDelete() {
     this.documentService.deleteDocument(this.document)
-    this.router.navigate(['/documents'], {relativeTo: this.route});
+    this.router.navigate(['/documents'], { relativeTo: this.route });
   }
 
 }
