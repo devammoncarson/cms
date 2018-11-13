@@ -40,8 +40,9 @@ export class DocumentEditComponent implements OnInit {
   onSubmit(form: NgForm){
     let newId = this.documentService.getMaxId();
     newId = newId++;
-    let values = form.value;
-    let newDocument = new Document(newId.toString(), values.name, values.description, values.documentUrl, values.children);
+    let value = form.value;
+    // let newDocument = new Document(newId.toString(), values['name'], values['description'], values['documentUrl'], values.children);
+    let newDocument = new Document(newId.toString(), value.name, value.description, value.documentUrl, value.children);
     if (this.editMode) {
       this.documentService.updateDocument(this.originalDocument, newDocument);
     } else {
