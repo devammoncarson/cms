@@ -1,5 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
@@ -44,7 +45,7 @@ import { ContactEditComponent } from './contacts/contact-edit/contact-edit.compo
     ContactEditComponent
   ],
   imports: [
-    BrowserModule, AppRoutingModule
+    BrowserModule, AppRoutingModule, FormsModule, ReactiveFormsModule
   ],
   providers: [WindRefService],
   bootstrap: [AppComponent]
