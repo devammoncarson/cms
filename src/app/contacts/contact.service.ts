@@ -42,6 +42,17 @@ export class ContactService {
       this.contactChangedEvent.emit(this.contacts.slice());
     }
 
+    getMaxId(): number {
+      let maxId = 0;
+      for (let contact of this.contacts){
+        const currentId = parseInt(contact.id);
+        if (currentId > maxId) {
+          maxId = currentId;
+        }
+      }
+      return maxId;
+    }
+
     addContact(newContact: Contact) {
       if(newContact == null || newContact == undefined){
         return;

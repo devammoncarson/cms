@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DndModule } from 'ng2-dnd';
 
 import { AppComponent } from './app.component';
 import { HeaderComponent } from './header/header.component';
@@ -45,7 +46,7 @@ import { ContactEditComponent } from './contacts/contact-edit/contact-edit.compo
     ContactEditComponent
   ],
   imports: [
-    BrowserModule, AppRoutingModule, FormsModule, ReactiveFormsModule
+    BrowserModule, AppRoutingModule, FormsModule, ReactiveFormsModule, DndModule.forRoot()
   ],
   providers: [WindRefService],
   bootstrap: [AppComponent]

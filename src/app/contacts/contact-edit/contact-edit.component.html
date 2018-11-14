@@ -1,6 +1,6 @@
 <div class="panel panel-default">
   <div class="panel-body">
-    <form id="contact-edit">
+    <form (ngSubmit)="onSubmit(f)" #f="ngForm" id="contact-edit">
       <div class="row">
         <div class="col-sm-12 form-group">
           <label for="name">Name</label>
@@ -9,7 +9,11 @@
             id="name"
             class="form-control required"
             size="120"
-            max="120">
+            max="120"
+            name="name"
+            [ngModel]="contact?.name"
+            #name = ngModel
+            required>
         </div>
 
         <div class="col-sm-12 form-group">
@@ -19,8 +23,15 @@
             id="email"
             class="form-control required"
             size="120"
-            max="255">
+            max="255"
+            name="email"
+            [ngModel]="contact?.email"
+            #email = ngModel
+            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$"
+            required>
         </div>
+
+        <div class="alert alert-danger" *ngIf="!email.valid && email.dirty">Enter A Valid Email Address</div>
 
         <div class="col-sm-12 form-group">
           <label for="phone">Phone</label>
@@ -29,9 +40,16 @@
             id="phone"
             class="form-control invalid"
             size="150"
-            max="255">
+            max="255"
+            name="phone"
+            [ngModel]="contact?.phone"
+            #phone = ngModel
+            pattern="\D*([2-9]\d{2})(\D*)([2-9]\d{2})(\D*)(\d{4})\D*"
+            required>
 
         </div>
+
+        <div class="alert alert-danger" *ngIf="!phone.valid && phone.dirty">Enter A Valid Phone Number</div>
 
         <div class="col-sm-12 form-group">
           <label for="imageUrl">Image URL</label>
@@ -40,7 +58,10 @@
             id="imageUrl"
             class="form-control"
             size="150"
-            max="255">
+            max="255"
+            name="imageUrl"
+            [ngModel]="contact?.imageUrl"
+            #imageUrl = ngModel>
         </div>
       </div>
 
@@ -48,7 +69,10 @@
         <label for="groupList">Group contacts</label>
 
         <div class="row" id="groupList"
-             style="min-height: 3rem;" >
+             style="min-height: 3rem;"
+             dnd-droppable 
+              [dropZones]="['contactGroup']" 
+              (onDropSuccess)="addToGroup($event)" >
 
           <div *ngFor="let contact of groupContacts; let i = index">
             <div>
@@ -61,10 +85,11 @@
 
       </div>
 
+      <div class="alert alert-danger" *ngIf="!name.valid || !email.valid">The Name and Email are required</div>
 
       <div class="row">
         <div class="col-xs-12 btn-toolbar">
-          <button class="btn btn-success" type="submit">Save</button>
+          <button class="btn btn-success" type="submit" [disabled]="!f.valid">Save</button>
           <button class="btn btn-primary" type="button" (click)="onCancel()">Cancel</button>
         </div>
       </div>
