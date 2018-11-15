@@ -49,7 +49,7 @@ export class ContactEditComponent implements OnInit {
     let newId = this.contactService.getMaxId();
     newId = newId++;
     let value = form.value;
-    let newContact = new Contact(newId.toString(), value.name, value.email, value.phone, value.imageUrl, value.groupContacts);
+    let newContact = new Contact(newId.toString(), value.name, value.email, value.phone, value.imageUrl, this.groupContacts);
     if (this.editMode) {
       this.contactService.updateContact(this.originalContact, newContact);
     } else {
