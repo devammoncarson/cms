@@ -1,6 +1,5 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { Message } from './message.model';
-// import { MOCKMESSAGES } from './MOCKMESSAGES';
 import { Subject } from 'rxjs';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 
@@ -8,14 +7,12 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
   providedIn: 'root'
 })
 export class MessagesService {
-  messageChangeEvent = new EventEmitter<Message[]>();
   messages: Message[] = [];
-  maxMessageId: Number;
   messageListChangedEvent = new Subject<Message[]>();
+  maxMessageId: number;
 
   constructor(private http: HttpClient) {
-    // this.messages = MOCKMESSAGES;
-    this.maxMessageId = this.getMaxId();  
+  this.maxMessageId = this.getMaxId();  
   }
 
   getMaxId(): number {
@@ -35,6 +32,7 @@ export class MessagesService {
         (messages: Message[]) => {
           this.messages = messages;
           this.maxMessageId = this.getMaxId();
+          this.messages.sort((a,b) => (a.id > b.id ) ? 1 : ((b.id > a.id) ? -1 : 0));
           this.messageListChangedEvent.next(this.messages.slice())
         });
     (error: any) => {
@@ -63,8 +61,13 @@ export class MessagesService {
     return null;
   }
 
-  addMessage(message:Message) {
-    this.messages.push(message);
-    this.messageChangeEvent.emit(this.messages.slice());
+  addMessage(newMessage: Message) {
+    if (!newMessage) {
+      return
+    }
+    this.maxMessageId++
+    newMessage.id = String(this.maxMessageId);
+    this.messages.push(newMessage);
+    this.storeMessages(this.messages);
   }
 }

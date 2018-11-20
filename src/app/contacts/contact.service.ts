@@ -1,31 +1,32 @@
 import { Injectable, EventEmitter } from '@angular/core';
 import { Contact } from './contact.model';
-// import { MOCKCONTACTS } from './MOCKCONTACTS';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
 import { Subject } from 'rxjs';
+import 'rxjs';
 
 
 @Injectable({
   providedIn: 'root'
 })
+
 export class ContactService {
-  contactSelectedEvent = new EventEmitter<Contact[]>();
-  contactChangedEvent = new EventEmitter<Contact[]>();
+  contactSelectedEvent = new EventEmitter<Document[]>();
   contacts: Contact[] = [];
+  // contactChangedEvent = new EventEmitter<Contact[]>();
   contactListChangedEvent = new Subject<Contact[]>();
   maxContactId: number;
 
   constructor(private http: HttpClient) {
-    // this.contacts = MOCKCONTACTS;
     this.maxContactId = this.getMaxId();
   }
 
   getContacts(): Contact[] {
-    this.http.get('https://mycmsfirebase.firebaseio.com/contacts.json')
+    this.http.get<Contact[]>('https://mycmsfirebase.firebaseio.com/contacts.json')
       .subscribe(
         (contacts: Contact[]) => {
           this.contacts = contacts;
           this.maxContactId = this.getMaxId();
+          this.contacts.sort((a,b) => (a.name > b.name ) ? 1 : ((b.name > a.name) ? -1 : 0));
           this.contactListChangedEvent.next(this.contacts.slice())
         });
     (error: any) => {
@@ -34,28 +35,18 @@ export class ContactService {
     return this.contacts.slice();
   }
 
-  storeContacts(contacts: Contact[]) {
-    let stringToServer = JSON.stringify(this.contacts);
-    let header = new HttpHeaders({
-      "Content-Type":"application/json"
-    });
-    this.http.put('https://mycmsfirebase.firebaseio.com/contacts.json', stringToServer,{headers:header})
-      .subscribe(result => {
-        this.contactListChangedEvent.next(Object.assign(this.contacts));
-      });
+  storeContacts(contacts: Contact[]) { 
+      const headers = new HttpHeaders({"Content-Type":"application/json"});
+
+    this.http.put('https://mycmsfirebase.firebaseio.com/contacts.json', contacts, {headers:headers})
+      .subscribe(
+        (response: Response) => {
+        this.contactListChangedEvent.next(contacts.slice())
+      }
+    );
   }
- 
-  //     const headers = new HttpHeaders({"Content-Type":"application/json"});
 
-  //   this.http.put('https://mycmsfirebase.firebaseio.com/contacts.json', contacts, {headers:headers})
-  //     .subscribe(
-  //       (response: Response) => {
-  //       this.contactListChangedEvent.next(contacts.slice())
-  //     }
-  //   );
-  // }
-
-  getContact(id:string): Contact {
+  getContact(id: string): Contact {
     for (const contact of this.contacts) {
       if (contact.id === id) {
         return contact;

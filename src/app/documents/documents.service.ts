@@ -1,5 +1,4 @@
 import { Injectable, EventEmitter } from '@angular/core';
-// import { MOCKDOCUMENTS } from './MOCKDOCUMENTS';
 import { Document } from './document.model'
 import { Subject } from 'rxjs';
 import { HttpClient, HttpHeaders } from "@angular/common/http";
@@ -8,15 +7,15 @@ import 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
+
 export class DocumentsService {
   documentSelectedEvent = new EventEmitter<Document[]>();
-  documentChangedEvent = new EventEmitter<Document[]>();
   documents: Document[] = [];
+  // documentChangedEvent = new EventEmitter<Document[]>();
   documentListChangedEvent = new Subject<Document[]>();
   maxDocumentId: number;
 
   constructor(private http: HttpClient) {
-    // this.documents = MOCKDOCUMENTS;
     this.maxDocumentId = this.getMaxId();
   }
 
@@ -43,7 +42,7 @@ export class DocumentsService {
       (response: Response) => {
         this.documentListChangedEvent.next(documents.slice())
       }
-    )
+    );
   }
 
   getDocument(id: string): Document {
@@ -80,7 +79,7 @@ export class DocumentsService {
   }
 
   addDocument(newDocument: Document){
-    if(newDocument === null || newDocument === undefined){
+    if(!newDocument){
       return
     } 
     this.maxDocumentId++ 
