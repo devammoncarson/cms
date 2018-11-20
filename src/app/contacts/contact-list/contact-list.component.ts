@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Contact } from '../contact.model'
 import { ContactService } from '../contact.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'cms-contact-list',
@@ -12,6 +13,8 @@ export class ContactListComponent implements OnInit {
   
 
   contacts: Contact[] = [];
+  private subscription: Subscription;
+  term: string;
 
 
   constructor(private contactService: ContactService) {
@@ -24,6 +27,10 @@ export class ContactListComponent implements OnInit {
         this.contacts = contacts;
       }
     )
+  }
+
+  onKeyPress(value: string) {
+    this.term = value;
   }
 
 }
