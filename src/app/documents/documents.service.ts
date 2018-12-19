@@ -20,10 +20,10 @@ export class DocumentsService {
   }
 
   getDocuments(): Document[] {
-    this.http.get<Document[]>('https://mycmsfirebase.firebaseio.com/documents.json')
+    this.http.get<{message: String, documents: Document[]}>('http://localhost:3000/documents')
       .subscribe(
-        (documents: Document[]) => {
-          this.documents = documents;
+        (documentData) => {
+          this.documents = documentData.documents;
           this.maxDocumentId = this.getMaxId();
           this.documents.sort((a,b) => (a.name > b.name ) ? 1 : ((b.name > a.name) ? -1 : 0));
           this.documentListChangedEvent.next(this.documents.slice())
@@ -37,7 +37,7 @@ export class DocumentsService {
   storeDocuments(documents: Document[]) {
     const headers = new HttpHeaders ({'Content-Type': 'application/json'});
     
-    this.http.put('https://mycmsfirebase.firebaseio.com/documents.json', documents, {headers: headers})
+    this.http.put('http://localhost:3000/documents', documents, {headers: headers})
     .subscribe(
       (response: Response) => {
         this.documentListChangedEvent.next(documents.slice())
@@ -58,19 +58,16 @@ export class DocumentsService {
     if (document === null) {
       return;
     }
-    const pos = this.documents.indexOf(document);
-    if (pos < 0) {
-      return;
-    }
-
-    this.documents.splice(pos, 1);
-    this.storeDocuments(this.documents);
-  }
+    this.http.delete('http://localhost:3000/documents/' + document.id)
+      .subscribe(
+        (response: Response) => {
+          this.getDocuments();
+        });
 
   getMaxId(): number {
     let maxId = 0;
     for (let document of this.documents){
-      const currentId = parseInt(document.id);
+      const currentId = +document.id;
       if (currentId > maxId) {
         maxId = currentId;
       }
@@ -78,14 +75,13 @@ export class DocumentsService {
     return maxId;
   }
 
-  addDocument(newDocument: Document){
+  addDocument(newDocument: Document) {
     if(!newDocument){
       return
     } 
-    this.maxDocumentId++ 
-    newDocument.id = String(this.maxDocumentId);
-    this.documents.push(newDocument);
-    this.storeDocuments(this.documents);
+    const headers = new HttpHeaders({
+    'Content-Type': 'application/json'
+    });
   }
 
   updateDocument(originalDocument: Document, newDocument: Document){
